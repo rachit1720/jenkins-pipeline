@@ -12,17 +12,8 @@ pipeline {
         stage('2. Run Tests') {
             steps {
                 echo 'Executing unit and integration tests...'
-                // This checks both standard Mac paths explicitly for npm
-                sh '''
-                    if [ -f "/opt/homebrew/bin/npm" ]; then
-                        /opt/homebrew/bin/npm run test
-                    elif [ -f "/usr/local/bin/npm" ]; then
-                        /usr/local/bin/npm run test
-                    else
-                        echo "Looking for globally installed npm..."
-                        npm run test
-                    fi
-                '''
+                // Clean and direct command execution
+                sh 'npm run test'
             }
         }
 
@@ -37,17 +28,7 @@ pipeline {
         stage('4. Mock Deploy') {
             steps {
                 echo 'Deploying application to Staging Environment...'
-                // This checks both standard Mac paths explicitly for node
-                sh '''
-                    if [ -f "/opt/homebrew/bin/node" ]; then
-                        /opt/homebrew/bin/node dist/server.js
-                    elif [ -f "/usr/local/bin/node" ]; then
-                        /usr/local/bin/node dist/server.js
-                    else
-                        echo "Looking for globally installed node..."
-                        node dist/server.js
-                    fi
-                '''
+                sh 'node dist/server.js'
                 echo 'Deployment live at http://staging.local'
             }
         }
