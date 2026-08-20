@@ -1,9 +1,6 @@
 pipeline {
     agent any
-    
-        environment {
-        PATH = "${env.HOME}/.local/share/fnm:/opt/homebrew/bin:/usr/local/bin:${env.PATH}"
-    }
+
     stages {
         stage('1. Install Dependencies') {
             steps {
@@ -15,7 +12,17 @@ pipeline {
         stage('2. Run Tests') {
             steps {
                 echo 'Executing unit and integration tests...'
-                sh 'npm run test'
+                // This checks both standard Mac paths explicitly for npm
+                sh '''
+                    if [ -f "/opt/homebrew/bin/npm" ]; then
+                        /opt/homebrew/bin/npm run test
+                    elif [ -f "/usr/local/bin/npm" ]; then
+                        /usr/local/bin/npm run test
+                    else
+                        echo "Looking for globally installed npm..."
+                        npm run test
+                    fi
+                '''
             }
         }
 
@@ -30,7 +37,17 @@ pipeline {
         stage('4. Mock Deploy') {
             steps {
                 echo 'Deploying application to Staging Environment...'
-                sh 'node dist/server.js'
+                // This checks both standard Mac paths explicitly for node
+                sh '''
+                    if [ -f "/opt/homebrew/bin/node" ]; then
+                        /opt/homebrew/bin/node dist/server.js
+                    elif [ -f "/usr/local/bin/node" ]; then
+                        /usr/local/bin/node dist/server.js
+                    else
+                        echo "Looking for globally installed node..."
+                        node dist/server.js
+                    fi
+                '''
                 echo 'Deployment live at http://staging.local'
             }
         }
