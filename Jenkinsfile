@@ -3,7 +3,7 @@ pipeline {
     
     environment {
         // This opens the path to your Mac's Node.js installation
-        PATH = "/opt/homebrew/bin:/usr/local/bin:${env.PATH}"
+         PATH = "/Users/mac/.nvm/versions/node/v20.11.0/bin:/opt/homebrew/bin:/usr/local/bin:${env.PATH}"
     }
 
     stages {
