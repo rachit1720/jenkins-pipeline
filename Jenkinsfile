@@ -1,5 +1,10 @@
 pipeline {
     agent any
+    
+    environment {
+        // This opens the path to your Mac's Node.js installation
+        PATH = "/opt/homebrew/bin:/usr/local/bin:${env.PATH}"
+    }
 
     stages {
         stage('1. Install Dependencies') {
