@@ -3,19 +3,32 @@ pipeline {
 
     stages {
         stage('1. Install Dependencies') {
-            steps {
-                echo 'Fetching project dependencies...'
-                sh 'echo "Dependencies installed successfully."'
-            }
-        }
+    steps {
+        sh '''
+            export PATH="/usr/local/bin:$PATH"
 
-        stage('2. Run Tests') {
-            steps {
-                echo 'Executing unit and integration tests...'
-                // Clean and direct command execution
-                sh 'npm run test'
-            }
-        }
+            echo "Node version:"
+            node -v
+
+            echo "NPM version:"
+            npm -v
+
+            echo "Installing dependencies..."
+            npm install
+        '''
+    }
+}
+
+stage('2. Run Tests') {
+    steps {
+        sh '''
+            export PATH="/usr/local/bin:$PATH"
+
+            echo "Running tests..."
+            npm run test
+        '''
+    }
+}
 
         stage('3. Build & Package') {
             steps {
